@@ -10,11 +10,12 @@ import com.mvi.example.android.screen.details.component.store.Label
 import com.mvi.example.android.screen.details.component.store.MaterialDetailsStoreProvider
 import com.mvi.example.android.utils.asValue
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.transform
 
 internal class MaterialDetailsComponentImpl(
     componentContext: ComponentContext,
-    materialId: Long,
+    materialId: Long?,
     goBack: () -> Unit
 ) :
     MaterialDetailsComponent,
@@ -25,13 +26,14 @@ internal class MaterialDetailsComponentImpl(
     }
 
     override val model: Value<Model> = store.asValue().map {
-        Model(it.material)
+        Model(it.material, it.buttonState)
     }
 
-    override val labels: Flow<Label> = store.labels.transform {
-        if (it is Label.MaterialSaved) {
+    override val labels: Flow<Label> = store.labels.map {
+        if (it is Label.Exit) {
             goBack.invoke()
         }
+        it
     }
 
     override fun updateTitle(title: String) {
@@ -43,6 +45,6 @@ internal class MaterialDetailsComponentImpl(
     }
 
     override fun saveMaterial() {
-        store.accept(Intent.SaveMaterial)
+        store.accept(Intent.OnButtonClicked)
     }
 }

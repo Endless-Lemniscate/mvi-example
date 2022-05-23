@@ -14,7 +14,7 @@ interface ListFlowComponent : BottomNavigationFlow {
         data class Details(val component: MaterialDetailsComponent) : Child()
     }
 
-    fun openDetails(id: Long)
+    fun openDetails(id: Long?)
 
     override fun dropFlow()
 }

@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class MaterialDetailsStoreProvider(private val materialId: Long) : KoinComponent {
+class MaterialDetailsStoreProvider(private val materialId: Long? = null) : KoinComponent {
 
     private val storeFactory: StoreFactory by inject()
     private val getMaterialByIdUseCase: GetMaterialByIdUseCase by inject()
@@ -33,17 +33,20 @@ class MaterialDetailsStoreProvider(private val materialId: Long) : KoinComponent
         data class MaterialLoaded(val item: Material) : Msg()
         data class TitleChanged(val title: String) : Msg()
         data class TextChanged(val text: String) : Msg()
+        object DataSaved : Msg()
     }
 
     private inner class ExecutorImpl : CoroutineExecutor<Intent, Unit, State, Msg, Label>() {
 
         override fun executeAction(action: Unit, getState: () -> State) {
             scope.launch(Dispatchers.Main) {
-                getMaterialByIdUseCase.invoke(materialId).map {
-                    it?.let {
-                        dispatch(
-                            Msg.MaterialLoaded(it)
-                        )
+                materialId?.let {
+                    getMaterialByIdUseCase.invoke(materialId).map {
+                        it?.let {
+                            dispatch(
+                                Msg.MaterialLoaded(it)
+                            )
+                        }
                     }
                 }
             }
@@ -57,9 +60,26 @@ class MaterialDetailsStoreProvider(private val materialId: Long) : KoinComponent
                 is Intent.UpdateText -> {
                     dispatch(Msg.TextChanged(intent.text))
                 }
-                is Intent.SaveMaterial -> {
-                    saveMaterial(getState.invoke().material)
-                    publish(Label.MaterialSaved("MATERIAL SAVED"))
+                is Intent.OnButtonClicked -> {
+                    val state = getState.invoke()
+                    when (state.buttonState) {
+                        ButtonState.SAVE, ButtonState.CREATE -> {
+                            if(state.material.title.isBlank()) {
+                                publish(Label.EmptyTitle)
+                                return
+                            }
+                            if(state.material.text.isBlank()) {
+                                publish(Label.EmptyText)
+                                return
+                            }
+                            saveMaterial(getState.invoke().material)
+                            dispatch(Msg.DataSaved)
+                            publish(Label.Exit("MATERIAL SAVED"))
+                        }
+                        ButtonState.CLOSE -> {
+                            publish(Label.Exit("MATERIAL NOT SAVED"))
+                        }
+                    }
                 }
             }
         }
@@ -76,10 +96,19 @@ class MaterialDetailsStoreProvider(private val materialId: Long) : KoinComponent
             when (msg) {
                 is Msg.MaterialLoaded -> copy(material = msg.item)
                 is Msg.TitleChanged -> {
-                    copy(material = material.copy(title = msg.title))
+                    copy(
+                        material = material.copy(title = msg.title),
+                        buttonState = if (material.id == null) ButtonState.CREATE else ButtonState.SAVE
+                    )
                 }
                 is Msg.TextChanged -> {
-                    copy(material = material.copy(text = msg.text))
+                    copy(
+                        material = material.copy(text = msg.text),
+                        buttonState = if (material.id == null) ButtonState.CREATE else ButtonState.SAVE
+                    )
+                }
+                Msg.DataSaved -> {
+                    copy(buttonState = ButtonState.CLOSE)
                 }
             }
     }

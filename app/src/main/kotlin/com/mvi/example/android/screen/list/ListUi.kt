@@ -26,7 +26,7 @@ import com.mvi.example.android.ui.primary
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @Composable
-fun ListUi(component: ListComponent, openItem: (Long) -> Unit) {
+fun ListUi(component: ListComponent, openItem: (Long?) -> Unit) {
     val model by component.model.subscribeAsState()
     val listState = rememberLazyListState()
 
@@ -36,7 +36,7 @@ fun ListUi(component: ListComponent, openItem: (Long) -> Unit) {
             List(model.items, component, Modifier.padding(it), listState, openItem)
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { component.onAddItemClicked() }) {
+            FloatingActionButton(onClick = { openItem.invoke(null) }) {
                 Icon(Icons.Filled.Add, "Add new material")
             }
         }

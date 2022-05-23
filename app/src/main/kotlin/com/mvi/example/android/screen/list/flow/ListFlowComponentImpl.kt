@@ -25,8 +25,10 @@ class ListFlowComponentImpl(
         ListComponentImpl(it)
     }
 
-    private val details: (ComponentContext, Long) -> MaterialDetailsComponent = { context, id ->
-        MaterialDetailsComponentImpl(context, id, { router.pop() })
+    private val details: (ComponentContext, Long?) -> MaterialDetailsComponent = { context, id ->
+        MaterialDetailsComponentImpl(context, id) {
+            router.pop()
+        }
     }
 
     private val router = router<Configuration, ListFlowComponent.Child>(
@@ -45,13 +47,13 @@ class ListFlowComponentImpl(
 
     override val routerState: Value<RouterState<*, ListFlowComponent.Child>> = router.state
 
-    override fun openDetails(id: Long) {
+    override fun openDetails(id: Long?) {
         router.navigate {
             navigateDetails(it, id)
         }
     }
 
-    private fun navigateDetails(start: List<Configuration>, materialId: Long): List<Configuration> {
+    private fun navigateDetails(start: List<Configuration>, materialId: Long?): List<Configuration> {
         val newState = start.toMutableList()
         newState.add(Configuration.Details(materialId))
         return newState
@@ -62,7 +64,7 @@ class ListFlowComponentImpl(
         object List : Configuration()
 
         @Parcelize
-        data class Details(val materialId: Long) : Configuration()
+        data class Details(val materialId: Long?) : Configuration()
     }
 
     override fun dropFlow() {

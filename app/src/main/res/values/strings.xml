@@ -3,6 +3,7 @@
     <string name="menu_news">Материалы</string>
     <string name="menu_settings">Настройки</string>
 
-    <string name="create_news">Создать</string>
-    <string name="edit_news">Изменить</string>
+    <string name="save_material">Сохранить</string>
+    <string name="exit">Закрыть</string>
+    <string name="create">Создать</string>
 </resources>

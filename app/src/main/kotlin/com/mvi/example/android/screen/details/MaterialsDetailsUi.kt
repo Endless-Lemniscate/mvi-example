@@ -12,18 +12,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
 import com.mvi.example.android.screen.details.component.MaterialDetailsComponent
 import com.mvi.example.android.screen.details.component.store.Label
-import kotlinx.coroutines.flow.Flow
 
 @Composable
 internal fun MaterialsDetailsUi(
     component: MaterialDetailsComponent
 ) {
     val model by component.model.subscribeAsState()
-    ProcessLabels(component.labels)
 
     Box(
         modifier = Modifier
@@ -36,6 +35,7 @@ internal fun MaterialsDetailsUi(
                 )
             )
     ) {
+        ProcessLabels(component)
         Column(
             Modifier
                 .fillMaxSize()
@@ -53,23 +53,29 @@ internal fun MaterialsDetailsUi(
                 modifier = Modifier.fillMaxWidth()
             )
             Button(onClick = { component.saveMaterial() }) {
-                Text(text = "Сохранить")
+                Text(text = stringResource(id = model.buttonState.label))
             }
         }
     }
 }
 
 @Composable
-private fun ProcessLabels(labelsFlow: Flow<Label>) {
+private fun ProcessLabels(component: MaterialDetailsComponent) {
     val context = LocalContext.current
-    val labels by labelsFlow.collectAsState(initial = Label.None)
+    val labels by component.labels.collectAsState(initial = Label.None)
 
     LaunchedEffect(labels) {
         when (val label = labels) {
-            is Label.MaterialSaved -> {
+            is Label.None -> Unit
+            is Label.Exit -> {
                 Toast.makeText(context, label.message, Toast.LENGTH_SHORT).show()
             }
-            is Label.None -> Unit
+            Label.EmptyTitle -> {
+                Toast.makeText(context, "Заполните заголовок", Toast.LENGTH_SHORT).show()
+            }
+            Label.EmptyText -> {
+                Toast.makeText(context, "Заполните описание", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }
