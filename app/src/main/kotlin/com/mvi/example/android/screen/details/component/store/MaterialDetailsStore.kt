@@ -5,13 +5,13 @@ import com.mvi.example.android.domain.models.Material
 
 internal interface MaterialDetailsStore : Store<Intent, State, Label>
 
-internal sealed class Intent {
-    data class UpdateTitle(val title: String) : Intent()
-    data class UpdateText(val text: String) : Intent()
-    object SaveMaterial : Intent()
+sealed interface Intent {
+    data class UpdateTitle(val title: String) : Intent
+    data class UpdateText(val text: String) : Intent
+    object SaveMaterial : Intent
 }
 
-internal data class State(
+data class State(
     val material: Material
 ) {
     companion object {
