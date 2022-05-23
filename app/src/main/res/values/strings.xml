@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MVI example</string>
+    <string name="menu_news">Материалы</string>
+    <string name="menu_settings">Настройки</string>
+
+    <string name="create_news">Создать</string>
+    <string name="edit_news">Изменить</string>
+</resources>

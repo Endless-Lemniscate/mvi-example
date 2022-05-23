@@ -1,0 +1,13 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.DayCounterApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
+        <item name="colorSurface">@color/background_variant_transparent</item> // navigation background
+        <item name="colorPrimary">#FFFFFF</item> // navigation icon active
+        <item name="colorOnSurface">#CCFFFFFF</item> //navigation icon not active
+        <item name="colorControlHighlight">@color/card_highlight_color</item> // card highlight color
+
+        <item name="android:windowBackground">@color/background_dark</item>
+        <item name="android:statusBarColor">#00000000</item>
+        <item name="android:navigationBarColor">@color/background_variant_transparent</item>
+    </style>
+</resources>
