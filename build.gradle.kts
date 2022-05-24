@@ -16,6 +16,7 @@ buildscript {
         classpath(libs.gradle.plugin.versioncheck)
         classpath(libs.gradle.plugin.secrets)
         classpath(libs.gradle.plugin.serialization)
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10")
     }
 }
 

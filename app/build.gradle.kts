@@ -35,10 +35,7 @@ android {
         }
     }
     buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.get()
+        viewBinding = true
     }
 
     packagingOptions {
@@ -51,21 +48,10 @@ android {
 dependencies {
     // di
     implementation("io.insert-koin:koin-android:3.2.0")
-    implementation("io.insert-koin:koin-androidx-compose:3.2.0")
 
-    implementation("androidx.activity:activity-compose:1.4.0")
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.1")
     implementation("com.google.android.material:material:1.6.0")
-
-    // compose
-    implementation(libs.androidx.compose.foundation)
-    implementation(libs.androidx.compose.material)
-    implementation(libs.androidx.compose.material.icons)
-    implementation(libs.androidx.compose.runtime)
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    debugImplementation(libs.androidx.compose.ui.tooling)
 
     // mvi
     val mviKotlinVersion = "3.0.0-beta02"
@@ -76,9 +62,8 @@ dependencies {
     implementation("com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:$mviKotlinVersion")
     implementation("com.arkivanov.mvikotlin:rx:$mviKotlinVersion")
     // navigation
-    val decomposeVersion = "0.6.0"
-    implementation("com.arkivanov.decompose:decompose:$decomposeVersion")
-    implementation("com.arkivanov.decompose:extensions-compose-jetpack:$decomposeVersion")
+    val ciceroneVersion = "7.1"
+    implementation("com.github.terrakok:cicerone:$ciceroneVersion")
 
     // database
     implementation("com.squareup.sqldelight:android-driver:1.5.2")
